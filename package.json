@@ -1,0 +1,51 @@
+{
+  "name": "nest-microservices-ddd",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "clean": "rimraf dist && rimraf apps/*/dist && rimraf libs/*/dist",
+    "prebuild": "yarn clean",
+    "build": "nest build",
+    "build:api-gateway": "nest build api-gateway",
+    "build:auth-service": "nest build auth-service",
+    "build:user-service": "nest build user-service",
+    "build:libs": "nest build common && nest build core",
+    "build:all": "yarn clean && yarn build:libs && yarn build:api-gateway && yarn build:auth-service && yarn build:user-service",
+    "start:dev": "concurrently \"yarn start:dev:api-gateway\" \"yarn start:dev:auth-service\" \"yarn start:dev:user-service\"",
+    "start:dev:api-gateway": "nest start api-gateway --watch",
+    "start:dev:auth-service": "nest start auth-service --watch",
+    "start:dev:user-service": "nest start user-service --watch"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.3.1",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/cqrs": "^9.0.3",
+    "@nestjs/jwt": "^10.0.3",
+    "@nestjs/microservices": "^9.0.0",
+    "@nestjs/passport": "^9.0.3",
+    "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^6.2.1",
+    "bcrypt": "^5.1.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^9.0.0",
+    "@nestjs/schematics": "^9.0.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/node": "^18.15.11",
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35",
+    "concurrently": "^8.0.1",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.4"
+  }
+}

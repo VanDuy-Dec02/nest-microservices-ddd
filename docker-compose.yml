@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres_microservices
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-nest_microservices}
+      POSTGRES_MULTIPLE_DATABASES: ${AUTH_DB_NAME:-auth_service},${USER_DB_NAME:-user_service}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-multiple-db.sh:/docker-entrypoint-initdb.d/init-multiple-db.sh
+    networks:
+      - microservices_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    container_name: adminer_microservices
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices_network
+    depends_on:
+      - postgres
+
+networks:
+  microservices_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
